@@ -1,13 +1,13 @@
-import { Dispatch } from "redux"
-import { SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType } from "../../app/app-reducer"
-import { authAPI, LoginParamsType } from "../../api/todolists-api"
-import { handleServerAppError, handleServerNetworkError } from "../../utils/error-utils"
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AppThunk } from "../../app/store"
+import { Dispatch } from 'redux'
+import { authAPI, LoginParamsType } from '../../api/todolists-api'
+import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppThunk } from '../../app/store'
+import { setAppStatus } from '../../app/app-reducer'
 
 // slice - редьюсеры создаем с помощью функции createSlice
 const slice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState: {
     isLoggedIn: false,
   },
@@ -34,13 +34,13 @@ export const { setIsLoggedIn } = slice.actions
 export const loginTC =
   (data: LoginParamsType): AppThunk =>
   (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC("loading"))
+    dispatch(setAppStatus({ status: 'loading' }))
     authAPI
       .login(data)
       .then((res) => {
         if (res.data.resultCode === 0) {
           dispatch(setIsLoggedIn({ isLoggedIn: true }))
-          dispatch(setAppStatusAC("succeeded"))
+          dispatch(setAppStatus({ status: 'succeeded' }))
         } else {
           handleServerAppError(res.data, dispatch)
         }
@@ -50,13 +50,13 @@ export const loginTC =
       })
   }
 export const logoutTC = (): AppThunk => (dispatch: Dispatch) => {
-  dispatch(setAppStatusAC("loading"))
+  dispatch(setAppStatus({ status: 'loading' }))
   authAPI
     .logout()
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(setIsLoggedIn({ isLoggedIn: false }))
-        dispatch(setAppStatusAC("succeeded"))
+        dispatch(setAppStatus({ status: 'succeeded' }))
       } else {
         handleServerAppError(res.data, dispatch)
       }
