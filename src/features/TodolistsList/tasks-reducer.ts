@@ -1,4 +1,3 @@
-import { AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType } from './todolists-reducer'
 import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from '../../api/todolists-api'
 import { Dispatch } from 'redux'
 import { AppRootStateType } from '../../app/store'
@@ -7,7 +6,7 @@ import { setAppStatus } from '../../app/app-reducer'
 
 const initialState: TasksStateType = {}
 
-export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
+export const tasksReducer = (state: TasksStateType = initialState, action: any): TasksStateType => {
   switch (action.type) {
     case 'REMOVE-TASK':
       return { ...state, [action.todolistId]: state[action.todolistId].filter((t) => t.id != action.taskId) }
@@ -28,7 +27,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
       return copyState
     case 'SET-TODOLISTS': {
       const copyState = { ...state }
-      action.todolists.forEach((tl) => {
+      action.todolists.forEach((tl: any) => {
         copyState[tl.id] = []
       })
       return copyState
@@ -134,8 +133,5 @@ type ActionsType =
   | ReturnType<typeof removeTaskAC>
   | ReturnType<typeof addTaskAC>
   | ReturnType<typeof updateTaskAC>
-  | AddTodolistActionType
-  | RemoveTodolistActionType
-  | SetTodolistsActionType
   | ReturnType<typeof setTasksAC>
 type ThunkDispatch = Dispatch<ActionsType>
