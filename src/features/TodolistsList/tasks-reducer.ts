@@ -6,8 +6,6 @@ import { setAppStatus } from '../../app/app-reducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
 
-const initialState: TasksStateType = {}
-
 const slice = createSlice({
   name: 'task',
   initialState: {} as TasksStateType,
