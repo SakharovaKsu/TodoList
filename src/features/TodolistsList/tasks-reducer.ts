@@ -30,6 +30,9 @@ const slice = createSlice({
     setTasks: (state, action: PayloadAction<{ tasks: Array<TaskType>; todolistId: string }>) => {
       state[action.payload.todolistId] = action.payload.tasks
     },
+    clearTaskData: (state, action: PayloadAction) => {
+      state = { ...{} }
+    },
   },
   // Когда нам необходимо обработать case, который был создан в другом slice
   // в builder.addCase добавляем action creator и функцию
@@ -50,7 +53,7 @@ const slice = createSlice({
 })
 
 export const tasksReducer = slice.reducer
-export const { removeTask, addTask, updateTask, setTasks } = slice.actions
+export const { removeTask, addTask, updateTask, setTasks, clearTaskData } = slice.actions
 
 // thunks
 export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {

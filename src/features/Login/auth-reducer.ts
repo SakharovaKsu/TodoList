@@ -4,6 +4,8 @@ import { handleServerAppError, handleServerNetworkError } from '../../utils/erro
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../../app/store'
 import { setAppStatus } from '../../app/app-reducer'
+import { clearTaskData } from '../TodolistsList/tasks-reducer'
+import { clearTodoData } from '../TodolistsList/todolists-reducer'
 
 // slice - редьюсеры создаем с помощью функции createSlice
 const slice = createSlice({
@@ -57,6 +59,8 @@ export const logoutTC = (): AppThunk => (dispatch: Dispatch) => {
       if (res.data.resultCode === 0) {
         dispatch(setIsLoggedIn({ isLoggedIn: false }))
         dispatch(setAppStatus({ status: 'succeeded' }))
+        dispatch(clearTodoData())
+        dispatch(clearTaskData())
       } else {
         handleServerAppError(res.data, dispatch)
       }
