@@ -1,4 +1,4 @@
-import { addTask, removeTask, setTasks, tasksReducer, TasksStateType, updateTask } from './tasks-reducer'
+import { addTask, removeTask, tasksReducer, TasksStateType, tasksThunk, updateTask } from './tasks-reducer'
 import { TaskPriorities, TaskStatuses } from '../../api/todolists-api'
 import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
 
@@ -182,7 +182,13 @@ test('empty arrays should be added when we set todolists', () => {
   expect(endState['2']).toBeDefined()
 })
 test('tasks should be added for todolist', () => {
-  const action = setTasks({ tasks: startState['todolistId1'], todolistId: 'todolistId1' })
+  // const action = setTasks({ tasks: startState['todolistId1'], todolistId: 'todolistId1' })
+  // 'requesId'(args), 'todolistId'(todolistId) - эти поля необходимы для meta(то что находится под капотом), но при этом здесь это не где не применяется
+  const action = tasksThunk.fetchTasks.fulfilled(
+    { tasks: startState['todolistId1'], todolistId: 'todolistId1' },
+    'requesId',
+    'todolistId',
+  )
 
   const endState = tasksReducer(
     {

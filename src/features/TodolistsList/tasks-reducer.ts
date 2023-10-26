@@ -1,10 +1,19 @@
-import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from '../../api/todolists-api'
+import {
+  TaskPriorities,
+  TaskStatuses,
+  TaskType,
+  todolistsAPI,
+  TodolistType,
+  UpdateTaskModelType,
+} from '../../api/todolists-api'
 import { Dispatch } from 'redux'
-import { AppRootStateType } from '../../app/store'
+import { AppDispatch, AppRootStateType } from '../../app/store'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 import { setAppStatus } from '../../app/app-reducer'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isRejectedWithValue, PayloadAction } from '@reduxjs/toolkit'
 import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
+import { rejects } from 'assert'
+import { createAppAsyncThunk } from '../../utils/createAppAsyncThunk'
 
 const slice = createSlice({
   name: 'task',
@@ -27,17 +36,20 @@ const slice = createSlice({
       const index = tasks.findIndex((task) => task.id === action.payload.taskId)
       if (index !== -1) tasks[index] = { ...tasks[index], ...action.payload.model }
     },
-    setTasks: (state, action: PayloadAction<{ tasks: Array<TaskType>; todolistId: string }>) => {
-      state[action.payload.todolistId] = action.payload.tasks
-    },
     clearTaskData: (state, action: PayloadAction) => {
       state = { ...{} }
     },
   },
+
   // Когда нам необходимо обработать case, который был создан в другом slice
   // в builder.addCase добавляем action creator и функцию
   extraReducers: (builder) => {
     builder
+      // первым параметром идет то, что хотим обрабатывать, второе - редбюсер
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        // пишем логику, которую писали в setTasks в slice.reducer, теперь action creator не нужны, объединили TC и AC
+        state[action.payload.todolistId] = action.payload.tasks
+      })
       .addCase(addTodolist, (state, action) => {
         state[action.payload.todolist.id] = []
       })
@@ -53,23 +65,36 @@ const slice = createSlice({
 })
 
 export const tasksReducer = slice.reducer
-export const { removeTask, addTask, updateTask, setTasks, clearTaskData } = slice.actions
+export const { removeTask, addTask, updateTask, clearTaskData } = slice.actions
 
 // thunks
-export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
-  dispatch(setAppStatus({ status: 'loading' }))
-  todolistsAPI.getTasks(todolistId).then((res) => {
-    const tasks = res.data.items
-    dispatch(setTasks({ tasks, todolistId }))
-    dispatch(setAppStatus({ status: 'succeeded' }))
-  })
-}
+// по типизации createAsyncThunk - 1 параметр то что возвращает, 2 параметр то, что приходит в аргументах, 3 параметр - общее свойство санки,
+// но так как 3 параметр дублируется везде, выносии типизацию отдельно createAppAsyncThunk
+export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }, string>(
+  `${slice.name}/fetchTasks`,
+  async (todolistId, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setAppStatus({ status: 'loading' }))
+      const res = await todolistsAPI.getTasks(todolistId)
+      const tasks = res.data.items
+      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
+      // thunkAPI.dispatch(setTasks({ tasks, todolistId }))
+      // после ретурна -> в slice -> extraReducers, и значения оказываются в action
+      return { tasks, todolistId }
+    } catch (error: any) {
+      handleServerNetworkError(error, thunkAPI.dispatch)
+      return thunkAPI.rejectWithValue(null)
+    }
+  },
+)
+
 export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: Dispatch) => {
   todolistsAPI.deleteTask(todolistId, taskId).then((res) => {
     const action = removeTask({ taskId, todolistId })
     dispatch(action)
   })
 }
+
 export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch) => {
   dispatch(setAppStatus({ status: 'loading' }))
   todolistsAPI
@@ -133,6 +158,9 @@ export type UpdateDomainTaskModelType = {
   startDate?: string
   deadline?: string
 }
+
 export type TasksStateType = {
   [key: string]: Array<TaskType>
 }
+
+export const tasksThunk = { fetchTasks }
