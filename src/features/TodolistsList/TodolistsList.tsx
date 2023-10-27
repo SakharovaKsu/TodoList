@@ -5,10 +5,10 @@ import {
   addTodolistTC,
   changeTodolistFilter,
   changeTodolistTitleTC,
-  fetchTodolistsTC,
   FilterValuesType,
   removeTodolistTC,
   TodolistDomainType,
+  todosThunks,
 } from './todolists-reducer'
 import { TasksStateType, tasksThunk } from './tasks-reducer'
 import { TaskStatuses } from '../../api/todolists-api'
@@ -35,8 +35,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
     if (demo || !isLoggedIn) {
       return
     }
-    const thunk = fetchTodolistsTC()
-    dispatch(thunk)
+    dispatch(todosThunks.fetchTodos())
   }, [])
 
   const removeTask = useCallback(function (taskId: string, todolistId: string) {

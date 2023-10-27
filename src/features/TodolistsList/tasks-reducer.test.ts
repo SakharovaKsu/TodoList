@@ -1,6 +1,6 @@
 import { tasksReducer, TasksStateType, tasksThunk } from './tasks-reducer'
 import { TaskPriorities, TaskStatuses } from '../../api/todolists-api'
-import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
+import { addTodolist, removeTodolist, todosThunks } from './todolists-reducer'
 
 let startState: TasksStateType = {}
 beforeEach(() => {
@@ -182,7 +182,7 @@ test('empty arrays should be added when we set todolists', () => {
     { id: '1', title: 'title 1', order: 0, addedDate: '' },
     { id: '2', title: 'title 2', order: 0, addedDate: '' },
   ]
-  const action = setTodolists({ todolists: todolists })
+  const action = todosThunks.fetchTodos.fulfilled({ todolists: todolists }, 'requesId')
 
   const endState = tasksReducer({}, action)
 

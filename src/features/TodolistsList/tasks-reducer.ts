@@ -1,18 +1,8 @@
-import {
-  TaskPriorities,
-  TaskStatuses,
-  TaskType,
-  todolistsAPI,
-  TodolistType,
-  UpdateTaskModelType,
-} from '../../api/todolists-api'
-import { Dispatch } from 'redux'
-import { AppDispatch, AppRootStateType } from '../../app/store'
+import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from '../../api/todolists-api'
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 import { setAppError, setAppStatus } from '../../app/app-reducer'
-import { createAsyncThunk, createSlice, isRejectedWithValue, PayloadAction } from '@reduxjs/toolkit'
-import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
-import { rejects } from 'assert'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { addTodolist, removeTodolist, todosThunks } from './todolists-reducer'
 import { createAppAsyncThunk } from '../../utils/createAppAsyncThunk'
 
 type UpdateTaskArg = {
@@ -59,8 +49,8 @@ const slice = createSlice({
       .addCase(removeTodolist, (state, action) => {
         delete state[action.payload.id]
       })
-      .addCase(setTodolists, (state, action) => {
-        action.payload.todolists.forEach((tl: any) => {
+      .addCase(todosThunks.fetchTodos.fulfilled, (state, action) => {
+        action.payload.todolists.forEach((tl) => {
           state[tl.id] = []
         })
       })
