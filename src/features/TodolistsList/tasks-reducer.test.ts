@@ -1,4 +1,4 @@
-import { removeTask, tasksReducer, TasksStateType, tasksThunk } from './tasks-reducer'
+import { tasksReducer, TasksStateType, tasksThunk } from './tasks-reducer'
 import { TaskPriorities, TaskStatuses } from '../../api/todolists-api'
 import { addTodolist, removeTodolist, setTodolists } from './todolists-reducer'
 
@@ -85,7 +85,12 @@ beforeEach(() => {
 })
 
 test('correct task should be deleted from correct array', () => {
-  const action = removeTask({ taskId: '2', todolistId: 'todolistId2' })
+  const deleteTask = {
+    taskId: '2',
+    todolistId: 'todolistId2',
+  }
+
+  const action = tasksThunk.removeTask.fulfilled(deleteTask, 'requesId', deleteTask)
 
   const endState = tasksReducer(startState, action)
 
@@ -95,8 +100,6 @@ test('correct task should be deleted from correct array', () => {
 })
 
 test('correct task should be added to correct array', () => {
-  //const action = addTaskAC("juce", "todolistId2");
-
   const task = {
     todoListId: 'todolistId2',
     title: 'juce',
