@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux'
 import { AppRootStateType } from '../../app/store'
 import { changeTodolistFilter, FilterValuesType, TodolistDomainType, todosThunks } from './todolists-reducer'
 import { TasksStateType, tasksThunk } from './tasks-reducer'
-import { TaskStatuses } from '../../api/todolists-api'
 import { Grid, Paper } from '@mui/material'
-import { AddItemForm } from '../../components/AddItemForm/AddItemForm'
+import { AddItemForm } from '../../common/components/AddItemForm/AddItemForm'
 import { Todolist } from './Todolist/Todolist'
 import { Navigate } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { isLoggedInSelector } from '../../app/app-selector'
+import { useAppDispatch } from '../../common/hooks/useAppDispatch'
 import { tasksSelector, todolistsSelector } from './todolist-selector'
+import { TaskStatuses } from '../../common/enums/enums'
+import { isLoggedInSelector } from '../Login/auth-selector'
 
 type PropsType = {
   demo?: boolean
@@ -31,8 +31,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   }, [])
 
   const removeTask = useCallback(function (taskId: string, todolistId: string) {
-    const thunk = tasksThunk.removeTask({ taskId, todolistId })
-    dispatch(thunk)
+    dispatch(tasksThunk.removeTask({ taskId, todolistId }))
   }, [])
 
   const addTask = useCallback(function (title: string, todolistId: string) {
@@ -48,8 +47,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   }, [])
 
   const changeFilter = useCallback(function (value: FilterValuesType, todolistId: string) {
-    const action = changeTodolistFilter({ id: todolistId, filter: value })
-    dispatch(action)
+    dispatch(changeTodolistFilter({ id: todolistId, filter: value }))
   }, [])
 
   const removeTodolist = useCallback(function (todolistId: string) {

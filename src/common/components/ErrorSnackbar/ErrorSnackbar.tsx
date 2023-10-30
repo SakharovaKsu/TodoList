@@ -1,9 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppRootStateType } from '../../app/store'
+import { AppRootStateType } from '../../../app/store'
 import { AlertProps, Snackbar } from '@mui/material'
 import MuiAlert from '@mui/material/Alert'
-import { setAppError } from '../../app/app-reducer'
+import { setAppError } from '../../../app/app-reducer'
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />

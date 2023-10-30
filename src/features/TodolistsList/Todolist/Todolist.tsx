@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect } from 'react'
-import { AddItemForm } from '../../../components/AddItemForm/AddItemForm'
-import { EditableSpan } from '../../../components/EditableSpan/EditableSpan'
+import { AddItemForm } from '../../../common/components/AddItemForm/AddItemForm'
+import { EditableSpan } from '../../../common/components/EditableSpan/EditableSpan'
 import { Task } from './Task/Task'
-import { TaskStatuses, TaskType } from '../../../api/todolists-api'
 import { FilterValuesType, TodolistDomainType } from '../todolists-reducer'
-import { useAppDispatch } from '../../../hooks/useAppDispatch'
+import { useAppDispatch } from '../../../common/hooks/useAppDispatch'
 import { Button, IconButton } from '@mui/material'
 import { Delete } from '@mui/icons-material'
+import { TaskStatuses } from '../../../common/enums/enums'
+import { TaskType } from '../todolists-api'
 
-type PropsType = {
+type TodolistType = {
   todolist: TodolistDomainType
-  tasks: Array<TaskType>
+  tasks: TaskType[]
   changeFilter: (value: FilterValuesType, todolistId: string) => void
   addTask: (title: string, todolistId: string) => void
   changeTaskStatus: (id: string, status: TaskStatuses, todolistId: string) => void
@@ -21,7 +22,7 @@ type PropsType = {
   demo?: boolean
 }
 
-export const Todolist = React.memo(function ({ demo = false, ...props }: PropsType) {
+export const Todolist = React.memo(function ({ demo = false, ...props }: TodolistType) {
   const dispatch = useAppDispatch()
 
   const addTask = useCallback(

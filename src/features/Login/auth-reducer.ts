@@ -1,11 +1,12 @@
 import { Dispatch } from 'redux'
-import { authAPI, LoginParamsType } from '../../api/todolists-api'
-import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
+import { handleServerNetworkError } from '../../common/utils/handleServerNetworkError'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppThunk } from '../../app/store'
 import { setAppStatus } from '../../app/app-reducer'
-// import { clearTaskData } from '../TodolistsList/tasks-reducer'
 import { clearTodoData } from '../TodolistsList/todolists-reducer'
+import { handleServerAppError } from '../../common/utils/handleServerAppError'
+import { authAPI, LoginParamsType } from './auth-api'
+import { resultCode } from '../../common/resultCode/resultCode'
 
 // slice - редьюсеры создаем с помощью функции createSlice
 const slice = createSlice({
@@ -40,7 +41,7 @@ export const loginTC =
     authAPI
       .login(data)
       .then((res) => {
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === resultCode.success) {
           dispatch(setIsLoggedIn({ isLoggedIn: true }))
           dispatch(setAppStatus({ status: 'succeeded' }))
         } else {
@@ -56,7 +57,7 @@ export const logoutTC = (): AppThunk => (dispatch: Dispatch) => {
   authAPI
     .logout()
     .then((res) => {
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === resultCode.success) {
         dispatch(setIsLoggedIn({ isLoggedIn: false }))
         dispatch(setAppStatus({ status: 'succeeded' }))
         dispatch(clearTodoData())
