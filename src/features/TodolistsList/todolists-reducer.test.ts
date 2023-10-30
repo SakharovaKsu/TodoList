@@ -1,7 +1,6 @@
 import {
   changeTodolistEntityStatus,
   changeTodolistFilter,
-  changeTodolistTitle,
   FilterValuesType,
   TodolistDomainType,
   todolistsReducer,
@@ -53,14 +52,17 @@ test('correct todolist should be added', () => {
 })
 
 test('correct todolist should change its name', () => {
-  let newTodolistTitle = 'New Todolist'
+  const updateTitle = {
+    id: todolistId2,
+    title: 'New Todolist',
+  }
 
-  const action = changeTodolistTitle({ id: todolistId2, title: newTodolistTitle })
+  const action = todosThunks.changeTodolistTitle.fulfilled(updateTitle, 'requesId', updateTitle)
 
   const endState = todolistsReducer(startState, action)
 
   expect(endState[0].title).toBe('What to learn')
-  expect(endState[1].title).toBe(newTodolistTitle)
+  expect(endState[1].title).toBe(updateTitle.title)
 })
 
 test('correct filter of todolist should be changed', () => {

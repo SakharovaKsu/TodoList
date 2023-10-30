@@ -12,11 +12,6 @@ const slice = createSlice({
   name: 'todolist',
   initialState: [] as TodolistDomainType[],
   reducers: {
-    changeTodolistTitle: (state, action: PayloadAction<{ id: string; title: string }>) => {
-      // находим индекс массивы, которому нужно изменить title и через state[index].title уже добавляем измененный title
-      const index = state.findIndex((todo) => todo.id === action.payload.id)
-      if (index !== -1) state[index].title = action.payload.title
-    },
     changeTodolistFilter: (state, action: PayloadAction<{ id: string; filter: FilterValuesType }>) => {
       const index = state.findIndex((todo) => todo.id === action.payload.id)
       if (index !== -1) state[index].filter = action.payload.filter
@@ -46,11 +41,16 @@ const slice = createSlice({
         // добавляем в начало
         state.unshift({ ...action.payload.todolist, filter: 'all', entityStatus: 'idle' })
       })
+      .addCase(changeTodolistTitle.fulfilled, (state, action) => {
+        // находим индекс массивы, которому нужно изменить title и через state[index].title уже добавляем измененный title
+        const index = state.findIndex((todo) => todo.id === action.payload.id)
+        if (index !== -1) state[index].title = action.payload.title
+      })
   },
 })
 
 export const todolistsReducer = slice.reducer
-export const { changeTodolistTitle, changeTodolistFilter, changeTodolistEntityStatus, clearTodoData } = slice.actions
+export const { changeTodolistFilter, changeTodolistEntityStatus, clearTodoData } = slice.actions
 
 // thunks
 const fetchTodos = createAppAsyncThunk<{ todolists: TodolistType[] }>(
@@ -113,15 +113,24 @@ const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, { title: str
   },
 )
 
-export const changeTodolistTitleTC = (id: string, title: string) => {
-  return (dispatch: Dispatch) => {
-    todolistsAPI.updateTodolist(id, title).then((res) => {
-      dispatch(changeTodolistTitle({ id: id, title: title }))
-    })
-  }
-}
+const changeTodolistTitle = createAppAsyncThunk<{ id: string; title: string }, { id: string; title: string }>(
+  `${slice.name}/changeTodolistTitle`,
+  async (arg, thunkAPI) => {
+    thunkAPI.dispatch(setAppStatus({ status: 'loading' }))
 
-export const todosThunks = { fetchTodos, removeTodolist, addTodolist }
+    try {
+      const res = await todolistsAPI.updateTodolist(arg.id, arg.title)
+      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
+
+      return { id: arg.id, title: arg.title }
+    } catch (error) {
+      handleServerNetworkError(error, thunkAPI.dispatch)
+      return thunkAPI.rejectWithValue(null)
+    }
+  },
+)
+
+export const todosThunks = { fetchTodos, removeTodolist, addTodolist, changeTodolistTitle }
 
 // types
 export type FilterValuesType = 'all' | 'active' | 'completed'
