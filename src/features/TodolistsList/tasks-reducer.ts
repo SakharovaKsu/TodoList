@@ -2,7 +2,7 @@ import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelTy
 import { handleServerAppError, handleServerNetworkError } from '../../utils/error-utils'
 import { setAppError, setAppStatus } from '../../app/app-reducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addTodolist, removeTodolist, todosThunks } from './todolists-reducer'
+import { todosThunks } from './todolists-reducer'
 import { createAppAsyncThunk } from '../../utils/createAppAsyncThunk'
 
 type UpdateTaskArg = {
@@ -43,11 +43,11 @@ const slice = createSlice({
         const index = tasks.findIndex((task) => task.id === action.payload.taskId)
         if (index !== -1) tasks[index] = { ...tasks[index], ...action.payload.domainModel }
       })
-      .addCase(addTodolist, (state, action) => {
+      .addCase(todosThunks.addTodolist.fulfilled, (state, action) => {
         state[action.payload.todolist.id] = []
       })
-      .addCase(removeTodolist, (state, action) => {
-        delete state[action.payload.id]
+      .addCase(todosThunks.removeTodolist.fulfilled, (state, action) => {
+        delete state[action.payload.todolistId]
       })
       .addCase(todosThunks.fetchTodos.fulfilled, (state, action) => {
         action.payload.todolists.forEach((tl) => {

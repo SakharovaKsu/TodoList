@@ -1,6 +1,6 @@
 import { tasksReducer, TasksStateType, tasksThunk } from './tasks-reducer'
 import { TaskPriorities, TaskStatuses } from '../../api/todolists-api'
-import { addTodolist, removeTodolist, todosThunks } from './todolists-reducer'
+import { todosThunks } from './todolists-reducer'
 
 let startState: TasksStateType = {}
 beforeEach(() => {
@@ -152,7 +152,7 @@ test('new array should be added when new todolist is added', () => {
     order: 0,
     addedDate: '',
   }
-  const action = addTodolist({ todolist: todolist })
+  const action = todosThunks.addTodolist.fulfilled({ todolist }, 'requesId', { title: 'todolist' })
 
   const endState = tasksReducer(startState, action)
 
@@ -167,7 +167,9 @@ test('new array should be added when new todolist is added', () => {
 })
 
 test('propertry with todolistId should be deleted', () => {
-  const action = removeTodolist({ id: 'todolistId2' })
+  const action = todosThunks.removeTodolist.fulfilled({ todolistId: 'todolistId2' }, 'requesId', {
+    todolistId: 'todolistId2',
+  })
 
   const endState = tasksReducer(startState, action)
 

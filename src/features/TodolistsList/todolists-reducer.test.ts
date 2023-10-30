@@ -1,10 +1,8 @@
 import {
-  addTodolist,
   changeTodolistEntityStatus,
   changeTodolistFilter,
   changeTodolistTitle,
   FilterValuesType,
-  removeTodolist,
   TodolistDomainType,
   todolistsReducer,
   todosThunks,
@@ -27,7 +25,10 @@ beforeEach(() => {
 })
 
 test('correct todolist should be removed', () => {
-  const endState = todolistsReducer(startState, removeTodolist({ id: todolistId1 }))
+  const endState = todolistsReducer(
+    startState,
+    todosThunks.removeTodolist.fulfilled({ todolistId: todolistId1 }, 'requesId', { todolistId: todolistId1 }),
+  )
 
   expect(endState.length).toBe(1)
   expect(endState[0].id).toBe(todolistId2)
@@ -41,7 +42,10 @@ test('correct todolist should be added', () => {
     order: 0,
   }
 
-  const endState = todolistsReducer(startState, addTodolist({ todolist }))
+  const endState = todolistsReducer(
+    startState,
+    todosThunks.addTodolist.fulfilled({ todolist }, 'requesId', { title: 'todolist' }),
+  )
 
   expect(endState.length).toBe(3)
   expect(endState[0].title).toBe(todolist.title)
