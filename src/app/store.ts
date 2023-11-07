@@ -24,8 +24,6 @@ export const store = configureStore({
 // определить автоматически тип всего объекта состояния
 export type AppRootStateType = ReturnType<typeof store.getState>
 
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AnyAction>
-
 // export type AppDispatch = typeof store.dispatch
 export type AppDispatch = ThunkDispatch<AppRootStateType, unknown, AnyAction>
 
