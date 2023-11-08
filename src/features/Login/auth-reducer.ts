@@ -40,7 +40,7 @@ export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', as
       return undefined
     }
     handleServerAppError(res.data, thunkAPI.dispatch)
-    return thunkAPI.rejectWithValue(null)
+    return thunkAPI.rejectWithValue(res.data)
   } catch (error) {
     handleServerNetworkError(error, thunkAPI.dispatch)
     return thunkAPI.rejectWithValue(null)
@@ -65,11 +65,11 @@ export const logout = createAppAsyncThunk<void, void>('auth/logout', async (_, t
 
 export const initializeApp = createAppAsyncThunk<void, void>('auth/initializeApp', async (_, thunkAPI) => {
   const res = await authAPI.me()
-
   try {
     if (res.data.resultCode === resultCode.success) {
       return undefined
     }
+    return thunkAPI.rejectWithValue(null)
   } catch (error) {
     handleServerNetworkError(error, thunkAPI.dispatch)
     return thunkAPI.rejectWithValue(null)

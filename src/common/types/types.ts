@@ -1,5 +1,11 @@
-export type ResponseType<D = {}> = {
+type fieldsErrors = {
+  error: string
+  field: string
+}
+
+export type BaseResponseType<D = {}> = {
   resultCode: number
   messages: Array<string>
   data: D
+  fieldsErrors?: fieldsErrors[]
 }
