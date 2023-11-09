@@ -1,5 +1,4 @@
-import { handleServerNetworkError } from '../../common/utils/handleServerNetworkError'
-import { setAppError, setAppStatus } from '../../app/app-reducer'
+import { setAppError } from '../../app/app-reducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { todosThunks } from './todolists-reducer'
 import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
@@ -69,34 +68,22 @@ export const { clearTaskData } = slice.actions
 // но так как 3 параметр дублируется везде, выносии типизацию отдельно createAppAsyncThunk
 export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }, string>(
   `${slice.name}/fetchTasks`,
-  async (todolistId, thunkAPI) => {
-    try {
-      thunkAPI.dispatch(setAppStatus({ status: 'loading' }))
+  (todolistId, thunkAPI) => {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistAPI.getTasks(todolistId)
       const tasks = res.data.items
-      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
-      // thunkAPI.dispatch(setTasks({ tasks, todolistId }))
-      // после ретурна -> в slice -> extraReducers, и значения оказываются в action
       return { tasks, todolistId }
-    } catch (error: any) {
-      handleServerNetworkError(error, thunkAPI.dispatch)
-      return thunkAPI.rejectWithValue(null)
-    }
+    })
   },
 )
 
 const removeTask = createAppAsyncThunk<{ taskId: string; todolistId: string }, { taskId: string; todolistId: string }>(
   `${slice.name}/removeTask`,
-  async (arg, thunkAPI) => {
-    thunkAPI.dispatch(setAppStatus({ status: 'loading' }))
-    try {
+  (arg, thunkAPI) => {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistAPI.deleteTask(arg.todolistId, arg.taskId)
-      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
       return arg
-    } catch (error) {
-      handleServerNetworkError(error, thunkAPI.dispatch)
-      return thunkAPI.rejectWithValue(null)
-    }
+    })
   },
 )
 
@@ -119,8 +106,7 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; todolis
 
 const updateTask = createAppAsyncThunk<UpdateTaskArg, UpdateTaskArg>('tasks/updateTask', async (arg, thunkAPI) => {
   const { dispatch, rejectWithValue, getState } = thunkAPI
-  try {
-    dispatch(setAppStatus({ status: 'loading' }))
+  return thunkTryCatch(thunkAPI, async () => {
     const state = getState()
     const task = state.tasks[arg.todolistId].find((t) => t.id === arg.taskId)
 
@@ -141,16 +127,12 @@ const updateTask = createAppAsyncThunk<UpdateTaskArg, UpdateTaskArg>('tasks/upda
 
     const res = await todolistAPI.updateTask(arg.todolistId, arg.taskId, apiModel)
     if (res.data.resultCode === resultCode.success) {
-      dispatch(setAppStatus({ status: 'succeeded' }))
       return arg
     } else {
       handleServerAppError(res.data, dispatch)
       return rejectWithValue(null)
     }
-  } catch (e) {
-    handleServerNetworkError(e, dispatch)
-    return rejectWithValue(null)
-  }
+  })
 })
 
 export const tasksThunk = { fetchTasks, addTask, updateTask, removeTask }

@@ -74,7 +74,6 @@ export const Todolist = React.memo(function ({ demo = false, ...props }: Todolis
       </h3>
       <AddItemForm addItem={addTask} disabled={props.todolist.entityStatus === 'loading'} />
       <div>
-        {/* делаем проверку, иначе не отобразяться */}
         {tasksForTodolist?.map((t) => (
           <Task
             key={t.id}
