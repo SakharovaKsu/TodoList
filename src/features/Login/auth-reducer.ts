@@ -6,6 +6,7 @@ import { handleServerAppError } from '../../common/utils/handleServerAppError'
 import { authAPI, LoginParamsType } from './auth-api'
 import { resultCode } from '../../common/resultCode/resultCode'
 import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
+import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
 
 const slice = createSlice({
   name: 'auth',
@@ -39,8 +40,6 @@ export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', as
       thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
       return undefined
     }
-    // handleServerAppError(res.data, thunkAPI.dispatch, false)
-    // return thunkAPI.rejectWithValue(res.data)
     // ❗ Если у нас fieldsErrors есть значит мы будем отображать ошибки
     // в конкретном поле в форме
     // ❗ Если у нас fieldsErrors нету значит отобразим ошибку глобально
@@ -69,17 +68,21 @@ export const logout = createAppAsyncThunk<void, void>('auth/logout', async (_, t
   }
 })
 
-export const initializeApp = createAppAsyncThunk<void, void>('auth/initializeApp', async (_, thunkAPI) => {
-  const res = await authAPI.me()
-  try {
+export const initializeApp = createAppAsyncThunk<
+  {
+    isLoggedIn: boolean
+  },
+  undefined
+>('auth/initializeApp', async (_, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI
+  return thunkTryCatch(thunkAPI, async () => {
+    const res = await authAPI.me()
     if (res.data.resultCode === resultCode.success) {
-      return undefined
+      return { isLoggedIn: true }
+    } else {
+      return rejectWithValue(null)
     }
-    return thunkAPI.rejectWithValue(null)
-  } catch (error) {
-    handleServerNetworkError(error, thunkAPI.dispatch)
-    return thunkAPI.rejectWithValue(null)
-  } finally {
-    thunkAPI.dispatch(isAppInitialized({ isInitialized: true }))
-  }
+  }).finally(() => {
+    dispatch(isAppInitialized({ isInitialized: true }))
+  })
 })
