@@ -15,12 +15,6 @@ export const store = configureStore({
   },
 })
 
-// thunk middleware идет по умолчанию, поэтому его не обязательно добавлять. Но если / когда понадобится делаем это следующим образом
-// export const store = configureStore({
-//   reducer: rootReducer,
-//   middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(thunkMiddleware)
-// })
-
 // определить автоматически тип всего объекта состояния
 export type AppRootStateType = ReturnType<typeof store.getState>
 

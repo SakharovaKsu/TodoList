@@ -39,7 +39,13 @@ export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', as
       thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
       return undefined
     }
-    handleServerAppError(res.data, thunkAPI.dispatch)
+    // handleServerAppError(res.data, thunkAPI.dispatch, false)
+    // return thunkAPI.rejectWithValue(res.data)
+    // ❗ Если у нас fieldsErrors есть значит мы будем отображать ошибки
+    // в конкретном поле в форме
+    // ❗ Если у нас fieldsErrors нету значит отобразим ошибку глобально
+    const isShowAppError = !res.data?.fieldsErrors?.length
+    handleServerAppError(res.data, thunkAPI.dispatch, isShowAppError)
     return thunkAPI.rejectWithValue(res.data)
   } catch (error) {
     handleServerNetworkError(error, thunkAPI.dispatch)
