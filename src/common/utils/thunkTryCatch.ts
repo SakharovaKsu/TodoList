@@ -4,6 +4,11 @@ import { BaseResponseType } from '../types'
 import { handleServerNetworkError } from './handleServerNetworkError'
 import { setAppStatus } from '../../app/app-reducer'
 
+/**
+ * thunkTryCatch - брабатывает асинхронную логику, обновляет статус приложения и обрабатывает ошибки в случае неудачи.
+ * @param logic Это функция, которая выполняет асинхронную логику (например, сетевой запрос) и возвращает промис с результатом.
+ */
+
 export const thunkTryCatch = async <T>(
   thunkAPI: BaseThunkAPI<AppRootStateType, unknown, AppDispatch, null | BaseResponseType>,
   logic: () => Promise<T>,

@@ -23,8 +23,6 @@ type TodolistType = {
 }
 
 export const Todolist = React.memo(function ({ demo = false, ...props }: TodolistType) {
-  const dispatch = useAppDispatch()
-
   const addTask = useCallback(
     (title: string) => {
       props.addTask(title, props.todolist.id)

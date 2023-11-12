@@ -22,14 +22,9 @@ const slice = createSlice({
       state = { ...{} }
     },
   },
-
-  // Когда нам необходимо обработать case, который был создан в другом slice
-  // в builder.addCase добавляем action creator и функцию
   extraReducers: (builder) => {
     builder
-      // первым параметром идет то, что хотим обрабатывать, второе - редбюсер
       .addCase(fetchTasks.fulfilled, (state, action) => {
-        // пишем логику, которую писали в setTasks в slice.reducer, теперь action creator не нужны, объединили TC и AC
         state[action.payload.todolistId] = action.payload.tasks
       })
       .addCase(addTask.fulfilled, (state, action) => {

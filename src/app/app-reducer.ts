@@ -3,14 +3,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type AppInitialState = ReturnType<typeof slice.getInitialState>
 
+/**
+ * initialState в app
+ * @param status - происходит ли сейчас взаимодействие с сервером
+ * @param isInitialized - для записи глобальной ошибки
+ * @param isInitialized true когда приложение проинициализировалось (проверили юзера, настройки получили и т.д.)
+ */
+
 const slice = createSlice({
   name: 'app',
   initialState: {
-    // происходит ли сейчас взаимодействие с сервером
     status: 'idle' as RequestStatusType,
-    // если ошибка какая-то глобальная произойдёт - запишем текст ошибки сюда
     error: null as string | null,
-    // true когда приложение проинициализировалось (проверили юзера, настройки получили и т.д.)
     isInitialized: false,
   },
   reducers: {
@@ -26,8 +30,6 @@ const slice = createSlice({
   },
 })
 
-// Создаем reducer с помощью slice
 export const appReducer = slice.reducer
 
-// Action creator также достаем с помощью slice
 export const { setAppStatus, setAppError, isAppInitialized } = slice.actions
