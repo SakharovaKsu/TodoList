@@ -5,10 +5,10 @@ import {
   TodolistDomainType,
   todolistsReducer,
   todosThunks,
-} from './todolists-reducer'
+} from './todolistsReducer'
 import { v1 } from 'uuid'
-import { RequestStatusType } from '../../app/app-reducer'
-import { TodolistType } from './todolists-api'
+import { RequestStatusType } from '../../app/appReducer'
+import { TodolistType } from './todolistsApi'
 
 let todolistId1: string
 let todolistId2: string

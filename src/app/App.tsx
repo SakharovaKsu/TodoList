@@ -4,7 +4,7 @@ import { TodolistsList } from '../features/TodolistsList/TodolistsList'
 import { ErrorSnackbar } from '../common/components/ErrorSnackbar/ErrorSnackbar'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppRootStateType } from './store'
-import { RequestStatusType } from './app-reducer'
+import { RequestStatusType } from './appReducer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import {
   AppBar,
@@ -17,9 +17,9 @@ import {
   Typography,
 } from '@mui/material'
 import { Menu } from '@mui/icons-material'
-import { isInitializedSelector, statusSelector } from './app-selector'
-import { isLoggedInSelector } from '../features/Login/auth-selector'
-import { initializeApp, logout } from '../features/Login/auth-reducer'
+import { isInitializedSelector, statusSelector } from './appSelector'
+import { isLoggedInSelector } from '../features/Login/authSelector'
+import { initializeApp, logout } from '../features/Login/authReducer'
 import { Login } from '../features/Login/Login'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useActions } from '../common/hooks/useActions'

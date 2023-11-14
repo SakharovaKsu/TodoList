@@ -1,8 +1,8 @@
-import { RequestStatusType } from '../../app/app-reducer'
+import { RequestStatusType } from '../../app/appReducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { tasksThunk } from './tasks-reducer'
+import { tasksThunk } from './tasksReducer'
 import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
-import { todolistAPI, TodolistType } from './todolists-api'
+import { todolistAPI, TodolistType } from './todolistsApi'
 import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
 
 const initialState: TodolistDomainType[] = []

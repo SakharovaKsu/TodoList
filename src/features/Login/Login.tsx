@@ -5,35 +5,16 @@ import { AppRootStateType } from '../../app/store'
 import { Navigate } from 'react-router-dom'
 import { useAppDispatch } from '../../common/hooks/useAppDispatch'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from '@mui/material'
-import { isLoggedInSelector } from './auth-selector'
-import { login } from './auth-reducer'
+import { isLoggedInSelector } from './authSelector'
+import { login } from './authReducer'
 import s from './Login.module.css'
 import { BaseResponseType } from '../../common/types'
+import { useLogin } from './useLogin'
 
 export const Login = () => {
-  const dispatch = useAppDispatch()
+  const { formik } = useLogin()
 
   const isLoggedIn = useSelector<AppRootStateType, boolean>(isLoggedInSelector)
-
-  const formik = useFormik({
-    validate: (values) => {},
-    initialValues: {
-      email: '',
-      password: '',
-      rememberMe: false,
-    },
-    onSubmit: (values, formikHelpers) => {
-      dispatch(login(values))
-        .unwrap()
-        .then((res) => console.log(res))
-        .catch((data: BaseResponseType) => {
-          const { fieldsErrors } = data
-          fieldsErrors?.forEach((fieldErrors) => {
-            formikHelpers.setFieldError(fieldErrors.field, fieldErrors.error)
-          })
-        })
-    },
-  })
 
   if (isLoggedIn) {
     return <Navigate to={'/'} />

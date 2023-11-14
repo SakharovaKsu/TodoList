@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { isAppInitialized, setAppStatus } from '../../app/app-reducer'
-import { clearTodoData } from '../TodolistsList/todolists-reducer'
+import { isAppInitialized, setAppStatus } from '../../app/appReducer'
+import { clearTodoData } from '../TodolistsList/todolistsReducer'
 import { handleServerAppError } from '../../common/utils/handleServerAppError'
-import { authAPI, LoginParamsType } from './auth-api'
+import { authApi, LoginParamsType } from './authApi'
 import { resultCode } from '../../common/resultCode/resultCode'
 import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
 import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
@@ -31,7 +31,7 @@ export const authReducer = slice.reducer
 
 export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', async (arg, thunkAPI) => {
   return thunkTryCatch(thunkAPI, async () => {
-    const res = await authAPI.login(arg)
+    const res = await authApi.login(arg)
 
     if (res.data.resultCode === resultCode.success) {
       thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
@@ -45,7 +45,7 @@ export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', as
 
 export const logout = createAppAsyncThunk<void, void>('auth/logout', async (_, thunkAPI) => {
   return thunkTryCatch(thunkAPI, async () => {
-    const res = await authAPI.logout()
+    const res = await authApi.logout()
 
     if (res.data.resultCode === resultCode.success) {
       thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
@@ -60,7 +60,7 @@ export const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefi
   async (_, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI
     return thunkTryCatch(thunkAPI, async () => {
-      const res = await authAPI.me()
+      const res = await authApi.me()
       if (res.data.resultCode === resultCode.success) {
         return { isLoggedIn: true }
       } else {
@@ -71,3 +71,5 @@ export const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefi
     })
   },
 )
+
+export const authThunks = { login, logout, initializeApp }

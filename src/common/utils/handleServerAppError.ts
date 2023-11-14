@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { setAppError, setAppStatus } from '../../app/app-reducer'
+import { setAppError, setAppStatus } from '../../app/appReducer'
 import { BaseResponseType } from './../types/index'
 
 /**
