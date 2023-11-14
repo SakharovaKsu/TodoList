@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect } from 'react'
-import './App.css'
-import { TodolistsList } from '../features/TodolistsList/TodolistsList'
+import { TodolistsList } from '../features/TodolistsList/ui/TodolistsList'
 import { ErrorSnackbar } from '../common/components/ErrorSnackbar/ErrorSnackbar'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppRootStateType } from './store'
-import { RequestStatusType } from './appReducer'
+import { RequestStatusType } from './app.reducer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import {
   AppBar,
@@ -19,7 +18,7 @@ import {
 import { Menu } from '@mui/icons-material'
 import { isInitializedSelector, statusSelector } from './appSelector'
 import { isLoggedInSelector } from '../features/Login/authSelector'
-import { initializeApp, logout } from '../features/Login/authReducer'
+import { initializeApp, logout } from '../features/Login/auth.reducer'
 import { Login } from '../features/Login/Login'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useActions } from '../common/hooks/useActions'

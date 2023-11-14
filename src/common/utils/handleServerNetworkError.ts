@@ -1,4 +1,4 @@
-import { setAppError, setAppStatus } from '../../app/appReducer'
+import { setAppError, setAppStatus } from '../../app/app.reducer'
 import axios from 'axios'
 import { AppDispatch } from '../../app/store'
 

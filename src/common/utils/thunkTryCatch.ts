@@ -2,7 +2,7 @@ import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { AppDispatch, AppRootStateType } from '../../app/store'
 import { BaseResponseType } from '../types'
 import { handleServerNetworkError } from './handleServerNetworkError'
-import { setAppStatus } from '../../app/appReducer'
+import { setAppStatus } from '../../app/app.reducer'
 
 /**
  * thunkTryCatch - брабатывает асинхронную логику, обновляет статус приложения и обрабатывает ошибки в случае неудачи.

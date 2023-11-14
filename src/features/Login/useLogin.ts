@@ -1,7 +1,7 @@
-import { LoginParamsType } from './authApi'
+import { LoginParamsType } from './auth.api'
 import { FormikHelpers, useFormik } from 'formik'
 import { BaseResponseType } from '../../common/types'
-import { authThunks, login } from './authReducer'
+import { authThunks } from './auth.reducer'
 import { useActions } from '../../common/hooks/useActions'
 
 type FormikErrorType = Partial<Omit<LoginParamsType, 'captcha'>>

@@ -1,11 +1,10 @@
-import { RequestStatusType } from '../../app/appReducer'
+import { RequestStatusType } from '../../../../app/app.reducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { tasksThunk } from './tasksReducer'
-import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
-import { todolistAPI, TodolistType } from './todolistsApi'
-import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
-
-const initialState: TodolistDomainType[] = []
+import { tasksThunk } from '../Task/tasks.reducer'
+import { createAppAsyncThunk } from '../../../../common/utils/createAppAsyncThunk'
+import { todolistAPI } from '../../api/todolists/todolists.api'
+import { thunkTryCatch } from '../../../../common/utils/thunkTryCatch'
+import { TodolistType } from '../../api/todolists/todolists.types'
 
 const slice = createSlice({
   name: 'todolist',

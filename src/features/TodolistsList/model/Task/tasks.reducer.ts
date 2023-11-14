@@ -1,12 +1,13 @@
-import { setAppError } from '../../app/appReducer'
+import { setAppError } from '../../../../app/app.reducer'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { todosThunks } from './todolistsReducer'
-import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
-import { handleServerAppError } from '../../common/utils/handleServerAppError'
-import { TaskType, todolistAPI, UpdateTaskModelType } from './todolistsApi'
-import { resultCode } from '../../common/resultCode/resultCode'
-import { TaskPriorities, TaskStatuses } from '../../common/enums/enums'
-import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
+import { todosThunks } from '../todolists/todolists.reducer'
+import { createAppAsyncThunk } from '../../../../common/utils/createAppAsyncThunk'
+import { handleServerAppError } from '../../../../common/utils/handleServerAppError'
+import { resultCode } from '../../../../common/resultCode/resultCode'
+import { TaskPriorities, TaskStatuses } from '../../../../common/enums/enums'
+import { thunkTryCatch } from '../../../../common/utils/thunkTryCatch'
+import { tasksApi } from '../../api/tasks/tasks.api'
+import { TaskType, UpdateTaskModelType } from '../../api/tasks/tasks.types'
 
 type UpdateTaskArg = {
   taskId: string
@@ -65,7 +66,7 @@ export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: s
   `${slice.name}/fetchTasks`,
   (todolistId, thunkAPI) => {
     return thunkTryCatch(thunkAPI, async () => {
-      const res = await todolistAPI.getTasks(todolistId)
+      const res = await tasksApi.getTasks(todolistId)
       const tasks = res.data.items
       return { tasks, todolistId }
     })
@@ -76,7 +77,7 @@ const removeTask = createAppAsyncThunk<{ taskId: string; todolistId: string }, {
   `${slice.name}/removeTask`,
   (arg, thunkAPI) => {
     return thunkTryCatch(thunkAPI, async () => {
-      const res = await todolistAPI.deleteTask(arg.todolistId, arg.taskId)
+      const res = await tasksApi.deleteTask(arg.todolistId, arg.taskId)
       return arg
     })
   },
@@ -87,7 +88,7 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; todolis
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI
     return thunkTryCatch(thunkAPI, async () => {
-      const res = await todolistAPI.createTask(arg.todolistId, arg.title)
+      const res = await tasksApi.createTask(arg.todolistId, arg.title)
       if (res.data.resultCode === resultCode.success) {
         const task = res.data.data.item
         return { task }
@@ -120,7 +121,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArg, UpdateTaskArg>('tasks/upda
       ...arg.domainModel,
     }
 
-    const res = await todolistAPI.updateTask(arg.todolistId, arg.taskId, apiModel)
+    const res = await tasksApi.updateTask(arg.todolistId, arg.taskId, apiModel)
     if (res.data.resultCode === resultCode.success) {
       return arg
     } else {
