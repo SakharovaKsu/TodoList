@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { isAppInitialized, setAppStatus } from '../../app/app.reducer'
 import { clearTodoData } from '../TodolistsList/model/todolists/todolists.reducer'
 import { handleServerAppError } from '../../common/utils/handleServerAppError'
-import { authApi, LoginParamsType } from './auth.api'
+import { authApi, LoginParams } from './auth.api'
 import { resultCode } from '../../common/resultCode/resultCode'
 import { createAppAsyncThunk } from '../../common/utils/createAppAsyncThunk'
 import { thunkTryCatch } from '../../common/utils/thunkTryCatch'
@@ -29,7 +29,7 @@ const slice = createSlice({
 
 export const authReducer = slice.reducer
 
-export const login = createAppAsyncThunk<void, LoginParamsType>('auth/login', async (arg, thunkAPI) => {
+export const login = createAppAsyncThunk<void, LoginParams>('auth/login', async (arg, thunkAPI) => {
   return thunkTryCatch(thunkAPI, async () => {
     const res = await authApi.login(arg)
 

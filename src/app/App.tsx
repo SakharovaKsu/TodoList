@@ -2,8 +2,8 @@ import React, { useCallback, useEffect } from 'react'
 import { TodolistsList } from '../features/TodolistsList/ui/TodolistsList'
 import { ErrorSnackbar } from '../common/components/ErrorSnackbar/ErrorSnackbar'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppRootStateType } from './store'
-import { RequestStatusType } from './app.reducer'
+import { AppRootState } from './store'
+import { RequestStatus } from './app.reducer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import {
   AppBar,
@@ -23,14 +23,14 @@ import { Login } from '../features/Login/Login'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useActions } from '../common/hooks/useActions'
 
-type PropsType = {
+type AppProps = {
   demo?: boolean
 }
 
-function App({ demo = false }: PropsType) {
-  const status = useSelector<AppRootStateType, RequestStatusType>(statusSelector)
-  const isInitialized = useSelector<AppRootStateType, boolean>(isInitializedSelector)
-  const isLoggedIn = useSelector<AppRootStateType, boolean>(isLoggedInSelector)
+function App({ demo = false }: AppProps) {
+  const status = useSelector<AppRootState, RequestStatus>(statusSelector)
+  const isInitialized = useSelector<AppRootState, boolean>(isInitializedSelector)
+  const isLoggedIn = useSelector<AppRootState, boolean>(isLoggedInSelector)
   const dispatch = useDispatch<any>()
   const actions = useActions({ initializeApp })
 

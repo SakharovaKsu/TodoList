@@ -21,7 +21,7 @@ export const useActions = <T extends ActionCreatorsMapObject>(actions: T) => {
 // Types
 type IsValidArg<T> = T extends object ? (keyof T extends never ? false : true) : true
 type ActionCreatorResponse<T extends (...args: any[]) => any> = ReturnType<ReturnType<T>>
-type ReplaceReturnType<T, TNewReturn> = T extends (...args: any[]) => infer R
+type ReplaceReturn<T, TNewReturn> = T extends (...args: any[]) => infer R
   ? IsValidArg<Extract<T, (...args: any[]) => any>> extends true
     ? (...args: Parameters<Extract<T, (...args: any[]) => any>>) => TNewReturn
     : () => TNewReturn
@@ -32,5 +32,5 @@ type ReplaceReturnType<T, TNewReturn> = T extends (...args: any[]) => infer R
  */
 
 type RemapActionCreators<T extends ActionCreatorsMapObject> = {
-  [K in keyof T]: ReplaceReturnType<T[K], ActionCreatorResponse<T[K]>>
+  [K in keyof T]: ReplaceReturn<T[K], ActionCreatorResponse<T[K]>>
 }

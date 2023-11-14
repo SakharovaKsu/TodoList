@@ -7,17 +7,17 @@ import { resultCode } from '../../../../common/resultCode/resultCode'
 import { TaskPriorities, TaskStatuses } from '../../../../common/enums/enums'
 import { thunkTryCatch } from '../../../../common/utils/thunkTryCatch'
 import { tasksApi } from '../../api/tasks/tasks.api'
-import { TaskType, UpdateTaskModelType } from '../../api/tasks/tasks.types'
+import { TaskType, UpdateTaskModel } from '../../api/tasks/tasks.types'
 
 type UpdateTaskArg = {
   taskId: string
-  domainModel: UpdateDomainTaskModelType
+  domainModel: UpdateDomainTaskModel
   todolistId: string
 }
 
 const slice = createSlice({
   name: 'task',
-  initialState: {} as TasksStateType,
+  initialState: {} as TasksState,
   reducers: {
     clearTaskData: (state, action: PayloadAction) => {
       state = { ...{} }
@@ -60,8 +60,6 @@ export const tasksReducer = slice.reducer
 export const { clearTaskData } = slice.actions
 
 // thunks
-// по типизации createAsyncThunk - 1 параметр то что возвращает, 2 параметр то, что приходит в аргументах, 3 параметр - общее свойство санки,
-// но так как 3 параметр дублируется везде, выносии типизацию отдельно createAppAsyncThunk
 export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }, string>(
   `${slice.name}/fetchTasks`,
   (todolistId, thunkAPI) => {
@@ -111,7 +109,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArg, UpdateTaskArg>('tasks/upda
       return rejectWithValue(null)
     }
 
-    const apiModel: UpdateTaskModelType = {
+    const apiModel: UpdateTaskModel = {
       deadline: task.deadline,
       description: task.description,
       priority: task.priority,
@@ -134,7 +132,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArg, UpdateTaskArg>('tasks/upda
 export const tasksThunk = { fetchTasks, addTask, updateTask, removeTask }
 
 // types
-export type UpdateDomainTaskModelType = {
+export type UpdateDomainTaskModel = {
   title?: string
   description?: string
   status?: TaskStatuses
@@ -142,6 +140,6 @@ export type UpdateDomainTaskModelType = {
   startDate?: string
   deadline?: string
 }
-export type TasksStateType = {
-  [key: string]: Array<TaskType>
+export type TasksState = {
+  [key: string]: TaskType[]
 }

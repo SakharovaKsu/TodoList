@@ -4,4 +4,4 @@ export const resultCode = {
   captcha: 10,
 } as const
 
-type ResultCodeType = (typeof resultCode)[keyof typeof resultCode]
+type ResultCode = (typeof resultCode)[keyof typeof resultCode]
