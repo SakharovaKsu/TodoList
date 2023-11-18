@@ -1,19 +1,19 @@
-import React, { ChangeEvent, FC, useCallback } from 'react'
+import React, { ChangeEvent, FC } from 'react'
 import { Checkbox, IconButton } from '@mui/material'
-import { EditableSpan } from '../../../../common/components/EditableSpan/EditableSpan'
+import { EditableSpan } from '../../../../../../common/components/EditableSpan/EditableSpan'
 import { Delete } from '@mui/icons-material'
-import { TaskStatuses } from '../../../../common/enums/enums'
-import { TaskType } from '../../api/tasks/tasks.types'
-import { useActions } from '../../../../common/hooks/useActions'
-import { tasksThunk } from '../../model/Task/tasks.reducer'
+import { TaskStatuses } from '../../../../../../common/enums/enums'
+import { TaskType } from '../../../../api/tasks/tasks.types'
+import { useActions } from '../../../../../../common/hooks/useActions'
+import { tasksThunk } from '../../../../model/Task/tasks.reducer'
 import s from './Task.module.css'
 
-type TaskProps = {
+type Props = {
   task: TaskType
   todolistId: string
 }
 
-export const Task: FC<TaskProps> = React.memo(({ task, todolistId }) => {
+export const Task: FC<Props> = React.memo(({ task, todolistId }) => {
   const { removeTask, updateTask } = useActions(tasksThunk)
 
   const onClickHandler = () => removeTask({ taskId: task.id, todolistId })

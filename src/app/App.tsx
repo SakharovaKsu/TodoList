@@ -23,11 +23,11 @@ import { Login } from '../features/Login/Login'
 import { bindActionCreators } from '@reduxjs/toolkit'
 import { useActions } from '../common/hooks/useActions'
 
-type AppProps = {
+type Props = {
   demo?: boolean
 }
 
-function App({ demo = false }: AppProps) {
+function App({ demo = false }: Props) {
   const status = useSelector<AppRootState, RequestStatus>(statusSelector)
   const isInitialized = useSelector<AppRootState, boolean>(isInitializedSelector)
   const isLoggedIn = useSelector<AppRootState, boolean>(isLoggedInSelector)

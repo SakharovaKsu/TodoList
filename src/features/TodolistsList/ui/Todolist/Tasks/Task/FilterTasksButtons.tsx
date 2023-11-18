@@ -1,13 +1,13 @@
 import React, { FC } from 'react'
 import { Button } from '@mui/material'
-import { changeTodolistFilter, FilterValues, TodolistDomain } from '../../model/todolists/todolists.reducer'
-import { useAppDispatch } from '../../../../common/hooks/useAppDispatch'
+import { changeTodolistFilter, FilterValues, TodolistDomain } from '../../../../model/todolists/todolists.reducer'
+import { useAppDispatch } from '../../../../../../common/hooks/useAppDispatch'
 
-type FilterTasksButtonsProps = {
+type Props = {
   todolist: TodolistDomain
 }
 
-const FilterTasksButtons: FC<FilterTasksButtonsProps> = ({ todolist }) => {
+const FilterTasksButtons: FC<Props> = ({ todolist }) => {
   const dispatch = useAppDispatch()
 
   const handleFilterChange = (filter: FilterValues) => {
