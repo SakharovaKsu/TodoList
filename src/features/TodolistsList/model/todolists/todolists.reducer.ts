@@ -5,6 +5,8 @@ import { createAppAsyncThunk } from '../../../../common/utils/createAppAsyncThun
 import { todolistAPI } from '../../api/todolists/todolists.api'
 import { thunkTryCatch } from '../../../../common/utils/thunkTryCatch'
 import { TodolistType } from '../../api/todolists/todolists.types'
+import { resultCode } from '../../../../common/resultCode/resultCode'
+import { handleServerAppError } from '../../../../common/utils/handleServerAppError'
 
 const slice = createSlice({
   name: 'todolist',
@@ -68,7 +70,12 @@ const removeTodolist = createAppAsyncThunk<{ todolistId: string }, { todolistId:
     return thunkTryCatch(thunkAPI, async () => {
       dispatch(changeTodolistEntityStatus({ id: arg.todolistId, status: 'loading' }))
       const res = await todolistAPI.deleteTodolist(arg.todolistId)
-      return arg
+      if (res.data.resultCode === resultCode.success) {
+        return arg
+      } else {
+        handleServerAppError(res.data, thunkAPI.dispatch)
+        return thunkAPI.rejectWithValue(null)
+      }
     })
   },
 )
@@ -78,7 +85,12 @@ const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, { title: str
   async (arg, thunkAPI) => {
     return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistAPI.createTodolist(arg.title)
-      return { todolist: res.data.data.item }
+      if (res.data.resultCode === resultCode.success) {
+        return { todolist: res.data.data.item }
+      } else {
+        handleServerAppError(res.data, thunkAPI.dispatch)
+        return thunkAPI.rejectWithValue(null)
+      }
     })
   },
 )
@@ -89,7 +101,12 @@ const changeTodolistTitle = createAppAsyncThunk<
 >(`${slice.name}/changeTodolistTitle`, async ({ todolistId, title }, thunkAPI) => {
   return thunkTryCatch(thunkAPI, async () => {
     const res = await todolistAPI.updateTodolist(todolistId, title)
-    return { todolistId, title }
+    if (res.data.resultCode === resultCode.success) {
+      return { todolistId, title }
+    } else {
+      handleServerAppError(res.data, thunkAPI.dispatch)
+      return thunkAPI.rejectWithValue(null)
+    }
   })
 })
 

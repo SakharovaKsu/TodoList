@@ -29,7 +29,7 @@ export const TodolistsList: React.FC<Props> = ({ demo = false }) => {
   }, [])
 
   const addTodolist = useCallback((title: string) => {
-    actions.addTodolist({ title })
+    return actions.addTodolist({ title }).unwrap()
   }, [])
 
   if (!isLoggedIn) {
@@ -46,7 +46,7 @@ export const TodolistsList: React.FC<Props> = ({ demo = false }) => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: '10px' }}>
-                <Todolist todolist={tl} demo={demo} />
+                <Todolist todolist={tl} demo={demo} addItem={addTodolist} />
               </Paper>
             </Grid>
           )

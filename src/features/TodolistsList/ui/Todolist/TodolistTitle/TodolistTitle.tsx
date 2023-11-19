@@ -6,12 +6,13 @@ import { todosThunks } from '../../../model/todolists/todolists.reducer'
 import { useActions } from '../../../../../common/hooks/useActions'
 
 type Props = {
-  title: string
+  titleTodo: string
   todolistId: string
   disabledButton: boolean
+  addItem: (title: string) => Promise<any>
 }
 
-const TodolistTitle: FC<Props> = ({ title, disabledButton, todolistId }) => {
+const TodolistTitle: FC<Props> = ({ titleTodo, disabledButton, todolistId, addItem }) => {
   const { removeTodolist, changeTodolistTitle } = useActions(todosThunks)
 
   const removeTodolistHandler = () => {
@@ -24,7 +25,7 @@ const TodolistTitle: FC<Props> = ({ title, disabledButton, todolistId }) => {
 
   return (
     <h3>
-      <EditableSpan value={title} onChange={changeTodolistTitleHandler} />
+      <EditableSpan value={titleTodo} onChange={changeTodolistTitleHandler} addItem={addItem} />
       <IconButton onClick={removeTodolistHandler} disabled={disabledButton}>
         <Delete />
       </IconButton>

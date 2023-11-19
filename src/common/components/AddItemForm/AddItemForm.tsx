@@ -3,18 +3,23 @@ import { IconButton, TextField } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
 
 type Props = {
-  addItem: (title: string) => void
+  addItem: (title: string) => Promise<any>
   disabled?: boolean
 }
 
 export const AddItemForm = React.memo(function ({ addItem, disabled = false }: Props) {
-  let [title, setTitle] = useState('')
-  let [error, setError] = useState<string | null>(null)
+  const [title, setTitle] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   const addItemHandler = () => {
     if (title.trim() !== '') {
       addItem(title)
-      setTitle('')
+        .then(() => {
+          setTitle('')
+        })
+        .catch((error) => {
+          setError(error.message)
+        })
     } else {
       setError('Title is required')
     }

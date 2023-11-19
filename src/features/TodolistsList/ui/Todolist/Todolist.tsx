@@ -10,22 +10,24 @@ import TodolistTitle from './TodolistTitle/TodolistTitle'
 type Props = {
   todolist: TodolistDomain
   demo?: boolean
+  addItem: (title: string) => Promise<any>
 }
 
-export const Todolist = React.memo(function ({ demo = false, todolist }: Props) {
+export const Todolist = React.memo(function ({ demo = false, todolist, addItem }: Props) {
   const { addTask } = useActions(tasksThunk)
   const todolistId = todolist.id
 
   const addTaskHandler = (title: string) => {
-    addTask({ title, todolistId })
+    return addTask({ title, todolistId }).unwrap()
   }
 
   return (
     <div>
       <TodolistTitle
-        title={todolist.title}
+        titleTodo={todolist.title}
         todolistId={todolist.id}
         disabledButton={todolist.entityStatus === 'loading'}
+        addItem={addItem}
       />
       <AddItemForm addItem={addTaskHandler} disabled={todolist.entityStatus === 'loading'} />
       <Tasks todolist={todolist} />

@@ -4,13 +4,14 @@ import { AppRootState } from '../../../app/store'
 import { AlertProps, Snackbar } from '@mui/material'
 import MuiAlert from '@mui/material/Alert'
 import { setAppError } from '../../../app/app.reducer'
+import { errorSelector } from '../../../app/appSelector'
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
 export const ErrorSnackbar = () => {
-  const error = useSelector<AppRootState, string | null>((state) => state.app.error)
+  const error = useSelector<AppRootState, string | null>(errorSelector)
   const dispatch = useDispatch()
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
