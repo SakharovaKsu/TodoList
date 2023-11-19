@@ -4,10 +4,15 @@ export type RequestStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type AppInitialState = ReturnType<typeof slice.getInitialState>
 
 /**
- * initialState в app
+ * @name initialState
  * @param status - происходит ли сейчас взаимодействие с сервером
  * @param isInitialized - для записи глобальной ошибки
  * @param isInitialized true когда приложение проинициализировалось (проверили юзера, настройки получили и т.д.)
+ */
+
+/**
+ * addMatcher
+ * {@link https://redux-toolkit.js.org/api/createReducer#builderaddmatcher}
  */
 
 const slice = createSlice({
@@ -18,9 +23,6 @@ const slice = createSlice({
     isInitialized: false,
   },
   reducers: {
-    setAppStatus: (state, action: PayloadAction<{ status: RequestStatus }>) => {
-      state.status = action.payload.status
-    },
     setAppError: (state, action: PayloadAction<{ error: string | null }>) => {
       state.error = action.payload.error
     },
@@ -28,8 +30,35 @@ const slice = createSlice({
       state.isInitialized = action.payload.isInitialized
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        (action) => {
+          return action.type.endsWith('/pending')
+        },
+        (state, action) => {
+          state.status = 'loading'
+        },
+      )
+      .addMatcher(
+        (action) => {
+          return action.type.endsWith('/fulfilled')
+        },
+        (state, action) => {
+          state.status = 'idle'
+        },
+      )
+      .addMatcher(
+        (action) => {
+          return action.type.endsWith('/rejected')
+        },
+        (state, action) => {
+          state.status = 'idle'
+        },
+      )
+  },
 })
 
 export const appReducer = slice.reducer
 
-export const { setAppStatus, setAppError, isAppInitialized } = slice.actions
+export const { setAppError, isAppInitialized } = slice.actions

@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { setAppError, setAppStatus } from '../../app/app.reducer'
+import { setAppError } from '../../app/app.reducer'
 import { BaseResponse } from './../types/index'
 
 /**
@@ -13,5 +13,4 @@ export const handleServerAppError = <D>(data: BaseResponse<D>, dispatch: Dispatc
   if (showError) {
     dispatch(setAppError({ error: data.messages.length ? data.messages[0] : 'Some error occurred' }))
   }
-  dispatch(setAppStatus({ status: 'failed' }))
 }

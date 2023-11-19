@@ -1,4 +1,4 @@
-import { setAppError, setAppStatus } from '../../app/app.reducer'
+import { setAppError } from '../../app/app.reducer'
 import axios from 'axios'
 import { AppDispatch } from '../../app/store'
 
@@ -22,5 +22,4 @@ export const handleServerNetworkError = (err: unknown, dispatch: AppDispatch): v
   }
 
   dispatch(setAppError({ error: errorMessage }))
-  dispatch(setAppStatus({ status: 'failed' }))
 }

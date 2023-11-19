@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { isAppInitialized, setAppStatus } from '../../app/app.reducer'
+import { isAppInitialized } from '../../app/app.reducer'
 import { clearTodoData } from '../TodolistsList/model/todolists/todolists.reducer'
 import { handleServerAppError } from '../../common/utils/handleServerAppError'
 import { authApi, LoginParams } from './auth.api'
@@ -34,7 +34,6 @@ export const login = createAppAsyncThunk<void, LoginParams>('auth/login', async 
     const res = await authApi.login(arg)
 
     if (res.data.resultCode === resultCode.success) {
-      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
       return undefined
     }
     const isShowAppError = !res.data?.fieldsErrors?.length
@@ -48,7 +47,6 @@ export const logout = createAppAsyncThunk<void, void>('auth/logout', async (_, t
     const res = await authApi.logout()
 
     if (res.data.resultCode === resultCode.success) {
-      thunkAPI.dispatch(setAppStatus({ status: 'succeeded' }))
       thunkAPI.dispatch(clearTodoData())
       return undefined
     }
