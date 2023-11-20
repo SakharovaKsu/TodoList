@@ -1,5 +1,5 @@
 import { RequestStatus } from '../../../../app/app.reducer'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isPending, PayloadAction } from '@reduxjs/toolkit'
 import { tasksThunk } from '../Task/tasks.reducer'
 import { createAppAsyncThunk } from '../../../../common/utils/createAppAsyncThunk'
 import { todolistAPI } from '../../api/todolists/todolists.api'
@@ -47,21 +47,11 @@ export const todolistsReducer = slice.reducer
 export const { changeTodolistFilter, changeTodolistEntityStatus, clearTodoData } = slice.actions
 
 // thunks
-const fetchTodos = createAppAsyncThunk<{ todolists: TodolistType[] }, void>(
-  `${slice.name}/fetchTodolists`,
-  (_, thunkAPI) => {
-    const { dispatch } = thunkAPI
 
-    return thunkTryCatch(thunkAPI, async () => {
-      const res = await todolistAPI.getTodolists()
-      res.data.forEach((tl) => {
-        dispatch(tasksThunk.fetchTasks(tl.id))
-      })
-
-      return { todolists: res.data }
-    })
-  },
-)
+const fetchTodos = createAppAsyncThunk<{ todolists: TodolistType[] }, void>('todo/fetchTodolists', async () => {
+  const res = await todolistAPI.getTodolists()
+  return { todolists: res.data }
+})
 
 const removeTodolist = createAppAsyncThunk<{ todolistId: string }, { todolistId: string }>(
   `${slice.name}/removeTodolist`,
@@ -81,17 +71,14 @@ const removeTodolist = createAppAsyncThunk<{ todolistId: string }, { todolistId:
 )
 
 const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, { title: string }>(
-  `${slice.name}/addTodolist`,
-  async (arg, thunkAPI) => {
-    return thunkTryCatch(thunkAPI, async () => {
-      const res = await todolistAPI.createTodolist(arg.title)
-      if (res.data.resultCode === resultCode.success) {
-        return { todolist: res.data.data.item }
-      } else {
-        handleServerAppError(res.data, thunkAPI.dispatch)
-        return thunkAPI.rejectWithValue(null)
-      }
-    })
+  'todo/addTodolist',
+  async ({ title }, { rejectWithValue }) => {
+    const res = await todolistAPI.createTodolist(title)
+    if (res.data.resultCode === resultCode.success) {
+      return { todolist: res.data.data.item }
+    } else {
+      return rejectWithValue(res.data)
+    }
   },
 )
 

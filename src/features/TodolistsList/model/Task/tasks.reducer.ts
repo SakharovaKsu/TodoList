@@ -57,7 +57,6 @@ const slice = createSlice({
 })
 
 export const tasksReducer = slice.reducer
-export const { clearTaskData } = slice.actions
 
 // thunks
 export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }, string>(

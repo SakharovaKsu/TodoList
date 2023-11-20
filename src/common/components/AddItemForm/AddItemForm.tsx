@@ -1,6 +1,8 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 import { IconButton, TextField } from '@mui/material'
 import { AddBox } from '@mui/icons-material'
+import { useSelector } from 'react-redux'
+import { errorSelector } from '../../../app/appSelector'
 
 type Props = {
   addItem: (title: string) => Promise<any>
@@ -17,8 +19,10 @@ export const AddItemForm = React.memo(function ({ addItem, disabled = false }: P
         .then(() => {
           setTitle('')
         })
-        .catch((error) => {
-          setError(error.message)
+        .catch((err) => {
+          if (err?.resultCode) {
+            setError(err.messages[0])
+          }
         })
     } else {
       setError('Title is required')

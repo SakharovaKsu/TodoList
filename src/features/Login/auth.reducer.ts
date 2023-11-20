@@ -30,27 +30,20 @@ const slice = createSlice({
 export const authReducer = slice.reducer
 
 export const login = createAppAsyncThunk<void, LoginParams>('auth/login', async (arg, thunkAPI) => {
-  return thunkTryCatch(thunkAPI, async () => {
-    const res = await authApi.login(arg)
-
-    if (res.data.resultCode === resultCode.success) {
-      return undefined
-    }
-    const isShowAppError = !res.data?.fieldsErrors?.length
-    handleServerAppError(res.data, thunkAPI.dispatch, isShowAppError)
-    return thunkAPI.rejectWithValue(res.data)
-  })
+  const res = await authApi.login(arg)
+  if (res.data.resultCode === resultCode.success) {
+    return undefined
+  }
+  return thunkAPI.rejectWithValue(res.data)
 })
 
 export const logout = createAppAsyncThunk<void, void>('auth/logout', async (_, thunkAPI) => {
-  return thunkTryCatch(thunkAPI, async () => {
-    const res = await authApi.logout()
+  const res = await authApi.logout()
 
-    if (res.data.resultCode === resultCode.success) {
-      thunkAPI.dispatch(clearTodoData())
-      return undefined
-    }
-  })
+  if (res.data.resultCode === resultCode.success) {
+    thunkAPI.dispatch(clearTodoData())
+    return undefined
+  }
 })
 
 export const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
